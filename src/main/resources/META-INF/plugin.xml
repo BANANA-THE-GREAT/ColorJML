@@ -1,0 +1,46 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.example.ColorJML</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>ColorJML</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="22371047@buaa.edu.cn" url="https://banana-the-great.github.io/">Mr.BANANA</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description>
+        JML 辅助阅读插件，致力于提升 BUAA-OO U3 的学习体验。
+        初步希望将 JML 中的关键信息高亮显示，避免黑压压一片注释给人带来恐怖的心理压力。
+        现在支持部分关键字高亮、运算符、等号不等号等的高亮以及
+    </description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+
+<!--    <application-components>-->
+<!--        <component>-->
+<!--            <implementation-class>com.example.colorjml.MyAnnotator</implementation-class>-->
+<!--        </component>-->
+<!--    </application-components>-->
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator language="" implementationClass="com.example.colorjml.MyAnnotator"/>
+    </extensions>
+
+
+
+<!--    <extensions defaultExtensionNs="com.intellij">-->
+<!--        <annotator language="JAVA" implementationClass="com.example.colorjml.MyAnnotator"/>-->
+<!--    </extensions>-->
+</idea-plugin>
