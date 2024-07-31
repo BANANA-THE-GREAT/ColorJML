@@ -11,6 +11,9 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility = "17"
+targetCompatibility = "17"
+
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
@@ -22,6 +25,18 @@ intellij {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:20.1.0'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.buildPlugin {
+    dependsOn 'patchPluginXml'
 }
 
 tasks {
