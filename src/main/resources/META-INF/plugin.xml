@@ -16,7 +16,7 @@
     <description>
         JML 辅助阅读插件，致力于提升 BUAA-OO U3 的学习体验。
         初步希望将 JML 中的关键信息高亮显示，避免黑压压一片注释给人带来恐怖的心理压力。
-        现在支持部分关键字高亮、运算符、等号不等号等的高亮以及
+        现在支持部分关键字高亮、运算符、等号不等号等的高亮以及彩虹括号效果。
     </description>
 
     <!-- Product and plugin compatibility requirements.
@@ -33,6 +33,8 @@
 <!--    </application-components>-->
 
     <depends>com.intellij.modules.lang</depends>
+
+<!--    <idea-version since-build="232" until-build="234.*"/>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="" implementationClass="com.example.colorjml.MyAnnotator"/>
