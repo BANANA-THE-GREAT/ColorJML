@@ -19,6 +19,13 @@ public class MyAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof PsiComment) {
             String text = element.getText();
+            if (text.length() < 5) {
+                return;
+            }
+            String header = text.substring(0,4);
+            if ((!header.equals("/*@ ")) && (!header.equals("//@ "))) {
+                return;
+            }
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
             highlightAts(text, (PsiComment) element, holder);
