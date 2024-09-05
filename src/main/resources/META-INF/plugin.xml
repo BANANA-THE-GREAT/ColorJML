@@ -16,7 +16,7 @@
     <description>
         JML 辅助阅读插件，致力于提升 BUAA-OO U3 的学习体验。
         初步希望将 JML 中的关键信息高亮显示，避免黑压压一片注释给人带来恐怖的心理压力。
-        现在支持部分关键字高亮、运算符、等号不等号等的高亮以及彩虹括号效果。
+        目前基本支持 BUAA-OO-U3 用到的所有 JML 相关语法的高亮以及彩虹括号效果。
     </description>
 
     <!-- Product and plugin compatibility requirements.
