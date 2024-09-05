@@ -28,7 +28,6 @@ public class MyAnnotator implements Annotator {
             }
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
-            highlightAts(text, (PsiComment) element, holder);
             highlightOperators(text, (PsiComment) element, holder);
             highlightKeywords(text, element.getTextRange().getStartOffset(), holder);
         }
@@ -58,7 +57,7 @@ public class MyAnnotator implements Annotator {
         HashSet<Character> equalsAndInequality = new HashSet<>();
         Collections.addAll(equalsAndInequality, '<', '>', '=');
         HashSet<Character> operator = new HashSet<>();
-        Collections.addAll(operator, '+', '-', '*', '/', '&', '|', '!');
+        Collections.addAll(operator, '+', '-', '*', '/', '&', '|', '!', '@');
         
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -75,18 +74,6 @@ public class MyAnnotator implements Annotator {
                         .textAttributes(MyHighlighterColors.OP)
                         .create();
             }
-        }
-    }
-    
-    private void highlightAts(String text, PsiComment element, AnnotationHolder holder) {
-        int index = text.indexOf('@');
-        while (index >= 0) {
-            TextRange range = TextRange.from(element.getTextRange().getStartOffset() + index, 1);
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .range(range)
-                    .textAttributes(MyHighlighterColors.AT)
-                    .create();
-            index = text.indexOf('@', index + 1);
         }
     }
     

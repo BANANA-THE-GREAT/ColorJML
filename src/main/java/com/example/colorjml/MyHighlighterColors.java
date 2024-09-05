@@ -7,10 +7,6 @@ import com.intellij.ui.JBColor;
 import java.awt.*;
 
 public class MyHighlighterColors {
-    public static final TextAttributesKey AT = TextAttributesKey.createTextAttributesKey(
-            "AT",
-            new TextAttributes(JBColor.ORANGE, null, null, null, Font.PLAIN)
-    );
     public static final TextAttributesKey EQ_NE = TextAttributesKey.createTextAttributesKey(
             "EQ_NE",
             new TextAttributes(JBColor.BLUE, null, null, null, Font.PLAIN)
