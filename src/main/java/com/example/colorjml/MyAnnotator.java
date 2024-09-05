@@ -4,12 +4,15 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiComment;
+import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 
+import java.awt.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,13 +32,38 @@ public class MyAnnotator implements Annotator {
             
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                     .range(element.getTextRange())
-                    .textAttributes(DefaultLanguageHighlighterColors.DOC_COMMENT)  // 设置一下默认颜色
+                    .textAttributes(DefaultLanguageHighlighterColors.IDENTIFIER)  // 设置一下默认颜色
                     .create();
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
             // highlightOperators(text, (PsiComment) element, holder);
             highlightKeywords(text, element.getTextRange().getStartOffset(), holder);
             highlightExpressions(text, element.getTextRange().getStartOffset(), holder);
+            highlightFuncBehavior(text, element.getTextRange().getStartOffset(), holder);
+        }
+    }
+    
+    private void highlightFuncBehavior(String text, int startOffset, AnnotationHolder holder) {
+        dye(text, startOffset, holder, "normal_behavior", JBColor.GREEN);
+        dye(text, startOffset, holder, "exceptional_behavior", JBColor.RED);
+        dye(text, startOffset, holder, "requires", JBColor.GREEN);
+        dye(text, startOffset, holder, "ensures", JBColor.YELLOW);
+        dye(text, startOffset, holder, "signals", JBColor.RED);
+    }
+    
+    private void dye(String text, int startOffset, AnnotationHolder holder, String expr, JBColor color) {
+        TextAttributesKey key = TextAttributesKey.createTextAttributesKey(
+                expr,new TextAttributes(color, null, null, null, Font.BOLD)
+        );
+        
+        Pattern pattern = Pattern.compile("\\b" + expr + "\\b");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            TextRange range = TextRange.from(startOffset + matcher.start(), expr.length());
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(range)
+                    .textAttributes(key)
+                    .create();
         }
     }
     
@@ -60,7 +88,7 @@ public class MyAnnotator implements Annotator {
     private void highlightKeywords(String text, int startOffset, AnnotationHolder holder) {
         HashSet<String> keywords = new HashSet<>();
         Collections.addAll(keywords, "public", "private", "protected",
-                "instance", "model", "non_null", "invariant", "pure",
+                "instance", "model", "non_null", "invariant", "pure", "also",
                 "void", "int", "String", "boolean", "null",
                 "safe");
                 
