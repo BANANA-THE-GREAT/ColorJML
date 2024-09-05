@@ -41,7 +41,8 @@ public class MyAnnotator implements Annotator {
         HashSet<String> keywords = new HashSet<>();
         Collections.addAll(keywords, "public", "private", "protected",
                 "instance", "model", "non_null", "invariant", "pure",
-                "void", "int", "String", "boolean", "null");
+                "void", "int", "String", "boolean", "null",
+                "safe");
                 
         for (String keyword : keywords) {
             Pattern pattern = Pattern.compile("\\b" + keyword + "\\b");
