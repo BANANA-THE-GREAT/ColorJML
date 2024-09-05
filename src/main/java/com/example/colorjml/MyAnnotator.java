@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MyAnnotator implements Annotator {
-    
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof PsiComment) {
@@ -26,6 +25,11 @@ public class MyAnnotator implements Annotator {
             if ((!header.equals("/*@ ")) && (!header.equals("//@ "))) {
                 return;
             }
+            
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(element.getTextRange())
+                    .textAttributes(MyHighlighterColors.TEXT)  // 设置一下默认颜色
+                    .create();
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
             highlightOperators(text, (PsiComment) element, holder);
