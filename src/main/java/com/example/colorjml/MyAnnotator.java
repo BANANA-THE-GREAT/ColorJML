@@ -3,6 +3,7 @@ package com.example.colorjml;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiComment;
@@ -28,11 +29,11 @@ public class MyAnnotator implements Annotator {
             
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                     .range(element.getTextRange())
-                    .textAttributes(MyHighlighterColors.TEXT)  // 设置一下默认颜色
+                    .textAttributes(DefaultLanguageHighlighterColors.DOC_COMMENT)  // 设置一下默认颜色
                     .create();
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
-            highlightOperators(text, (PsiComment) element, holder);
+            // highlightOperators(text, (PsiComment) element, holder);
             highlightKeywords(text, element.getTextRange().getStartOffset(), holder);
             highlightExpressions(text, element.getTextRange().getStartOffset(), holder);
         }
@@ -70,7 +71,7 @@ public class MyAnnotator implements Annotator {
                 TextRange range = TextRange.from(startOffset + matcher.start(), keyword.length());
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                         .range(range)
-                        .textAttributes(MyHighlighterColors.KEYWORD)
+                        .textAttributes(DefaultLanguageHighlighterColors.KEYWORD)
                         .create();
             }
         }
