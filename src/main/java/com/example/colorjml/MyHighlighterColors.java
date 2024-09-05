@@ -21,4 +21,8 @@ public class MyHighlighterColors {
             "KEYWORD",
             new TextAttributes(JBColor.ORANGE, null, null, null, Font.BOLD)
     );
+    public static final TextAttributesKey EXPRESSION = TextAttributesKey.createTextAttributesKey(
+            "EXPRESSION",
+            new TextAttributes(JBColor.YELLOW, null, null, null, Font.BOLD)
+    );
 }

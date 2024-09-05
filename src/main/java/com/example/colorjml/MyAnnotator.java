@@ -34,6 +34,25 @@ public class MyAnnotator implements Annotator {
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
             highlightOperators(text, (PsiComment) element, holder);
             highlightKeywords(text, element.getTextRange().getStartOffset(), holder);
+            highlightExpressions(text, element.getTextRange().getStartOffset(), holder);
+        }
+    }
+    
+    private void highlightExpressions(String text, int startOffset, AnnotationHolder holder) {
+        HashSet<String> expressions = new HashSet<>();
+        Collections.addAll(expressions, "forall", "exists", "sum", "product", "max", "min", "num_of",
+                "result", "old", "not_assigned", "not_modified", "nonnullelements", "type", "typeof");
+        
+        for (String expr : expressions) {
+            Pattern pattern = Pattern.compile("\\\\" + expr + "\\b");
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                TextRange range = TextRange.from(startOffset + matcher.start(), expr.length() + 1);
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .range(range)
+                        .textAttributes(MyHighlighterColors.EXPRESSION)
+                        .create();
+            }
         }
     }
     
