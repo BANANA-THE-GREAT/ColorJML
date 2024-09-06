@@ -45,11 +45,11 @@ public class MyAnnotator implements Annotator {
     
     private void highlightFuncBehavior(String text, int startOffset, AnnotationHolder holder) {
         dye(text, startOffset, holder, "normal_behavior", JBColor.GREEN);
-        dye(text, startOffset, holder, "assignable", JBColor.GREEN);
-        dye(text, startOffset, holder, "modifiable", JBColor.GREEN);
+        dye(text, startOffset, holder, "assignable", JBColor.BLUE);
+        dye(text, startOffset, holder, "modifiable", JBColor.BLUE);
         dye(text, startOffset, holder, "exceptional_behavior", JBColor.RED);
         dye(text, startOffset, holder, "requires", JBColor.GREEN);
-        dye(text, startOffset, holder, "ensures", JBColor.YELLOW);
+        dye(text, startOffset, holder, "ensures", (JBColor) JBColor.CYAN);
         dye(text, startOffset, holder, "signals", JBColor.RED);
     }
     
