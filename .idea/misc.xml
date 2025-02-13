@@ -12,15 +12,9 @@
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
-        <ConfigurationLocation id="44a5b29c-e19f-4e90-a083-8b458c80305b" type="LOCAL_FILE" scope="All" description="OO">$PROJECT_DIR$/../../../../大二上学习/OO_pre/config.xml</ConfigurationLocation>
+        <ConfigurationLocation id="44a5b29c-e19f-4e90-a083-8b458c80305b" type="LOCAL_FILE" scope="All" description="OO">$PROJECT_DIR$/../../../大二上学习/OO_pre/config.xml</ConfigurationLocation>
       </list>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="web" url="file://$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17 (2)" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
 </project>
