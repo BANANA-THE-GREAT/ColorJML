@@ -23,6 +23,58 @@ public class MyAnnotator implements Annotator {
     private static final JBColor VARIABLE_CYAN = new JBColor(new Color(0x00B5B5), new Color(0x00CED1));
     private static final JBColor VARIABLE_BLUE = new JBColor(new Color(0x0000FF), new Color(0x1E90FF));
     private static final JBColor VARIABLE_PINK = new JBColor(new Color(0x8B008B), new Color(0xFF6666));
+    private static final Map<String, Pattern> KEYWORD_PATTERN = new HashMap<>();
+    private static final Map<String, Pattern> EXPRESSION_PATTERN = new HashMap<>();
+    private static final Map<String, Pattern> FUNC_BEHAVIOR_PATTERN = new HashMap<>();
+    private static final Map<String, TextAttributesKey> FUNC_BEHAVIOR_COLOR = new HashMap<>();
+    private static final Map<Character, Character> bracketPairs = new HashMap<>();
+    
+    static {
+        HashSet<String> keywords = new HashSet<>();
+        Collections.addAll(keywords, "public", "private", "protected",
+                "instance", "model", "non_null", "invariant", "pure", "also",
+                "void", "int", "String", "boolean", "null",
+                "safe");
+        for (String keyword : keywords) {
+            KEYWORD_PATTERN.put(keyword, Pattern.compile("\\b" + keyword + "\\b"));
+        }
+        
+        HashSet<String> expressions = new HashSet<>();
+        Collections.addAll(expressions, "forall", "exists", "sum", "product", "max", "min", "num_of",
+                "result", "old", "not_assigned", "not_modified", "nonnullelements", "type", "typeof");
+        for (String expression : expressions) {
+            EXPRESSION_PATTERN.put(expression, Pattern.compile("\\\\" + expression + "\\b"));
+        }
+        
+        Map<String, JBColor> name2color = new HashMap<>();
+        name2color.put("normal_behavior", VARIABLE_GREEN);
+        name2color.put("assignable", VARIABLE_BLUE);
+        name2color.put("modifiable", VARIABLE_BLUE);
+        name2color.put("exceptional_behavior", JBColor.RED);
+        name2color.put("requires", VARIABLE_GREEN);
+        name2color.put("ensures", VARIABLE_CYAN);
+        name2color.put("signals", JBColor.RED);
+        name2color.put("signals_only", JBColor.RED);
+        for (String name : name2color.keySet()) {
+            FUNC_BEHAVIOR_PATTERN.put(name, Pattern.compile("\\b" + name + "\\b"));
+            FUNC_BEHAVIOR_COLOR.put(
+                    name,
+                    TextAttributesKey.createTextAttributesKey(
+                            name, new TextAttributes(
+                                    name2color.get(name), null, null, null, Font.BOLD
+                            )
+                    )
+            );
+        }
+        
+        // 定义括号对
+        bracketPairs.put('(', ')');
+        bracketPairs.put('{', '}');
+        bracketPairs.put('[', ']');
+        bracketPairs.put(')', '(');
+        bracketPairs.put('}', '{');
+        bracketPairs.put(']', '[');
+    }
     
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -50,39 +102,22 @@ public class MyAnnotator implements Annotator {
     }
     
     private void highlightFuncBehavior(String text, int startOffset, AnnotationHolder holder) {
-        dye(text, startOffset, holder, "normal_behavior", VARIABLE_GREEN);
-        dye(text, startOffset, holder, "assignable", VARIABLE_BLUE);
-        dye(text, startOffset, holder, "modifiable", VARIABLE_BLUE);
-        dye(text, startOffset, holder, "exceptional_behavior", JBColor.RED);
-        dye(text, startOffset, holder, "requires", VARIABLE_GREEN);
-        dye(text, startOffset, holder, "ensures", VARIABLE_CYAN);
-        dye(text, startOffset, holder, "signals", JBColor.RED);
-        dye(text, startOffset, holder, "signals_only", JBColor.RED);
-    }
-    
-    private void dye(String text, int startOffset, AnnotationHolder holder, String expr, JBColor color) {
-        TextAttributesKey key = TextAttributesKey.createTextAttributesKey(
-                expr,new TextAttributes(color, null, null, null, Font.BOLD)
-        );
-        
-        Pattern pattern = Pattern.compile("\\b" + expr + "\\b");
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
-            TextRange range = TextRange.from(startOffset + matcher.start(), expr.length());
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .range(range)
-                    .textAttributes(key)
-                    .create();
+        for (String funcBehavior : FUNC_BEHAVIOR_PATTERN.keySet()) {
+            Pattern pattern = FUNC_BEHAVIOR_PATTERN.get(funcBehavior);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                TextRange range = TextRange.from(startOffset + matcher.start(), funcBehavior.length());
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .range(range)
+                        .textAttributes(FUNC_BEHAVIOR_COLOR.get(funcBehavior))
+                        .create();
+            }
         }
     }
     
     private void highlightExpressions(String text, int startOffset, AnnotationHolder holder) {
-        HashSet<String> expressions = new HashSet<>();
-        Collections.addAll(expressions, "forall", "exists", "sum", "product", "max", "min", "num_of",
-                "result", "old", "not_assigned", "not_modified", "nonnullelements", "type", "typeof");
-        
-        for (String expr : expressions) {
-            Pattern pattern = Pattern.compile("\\\\" + expr + "\\b");
+        for (String expr : EXPRESSION_PATTERN.keySet()) {
+            Pattern pattern = EXPRESSION_PATTERN.get(expr);
             Matcher matcher = pattern.matcher(text);
             while (matcher.find()) {
                 TextRange range = TextRange.from(startOffset + matcher.start(), expr.length() + 1);
@@ -95,14 +130,8 @@ public class MyAnnotator implements Annotator {
     }
     
     private void highlightKeywords(String text, int startOffset, AnnotationHolder holder) {
-        HashSet<String> keywords = new HashSet<>();
-        Collections.addAll(keywords, "public", "private", "protected",
-                "instance", "model", "non_null", "invariant", "pure", "also",
-                "void", "int", "String", "boolean", "null",
-                "safe");
-                
-        for (String keyword : keywords) {
-            Pattern pattern = Pattern.compile("\\b" + keyword + "\\b");
+        for (String keyword : KEYWORD_PATTERN.keySet()) {
+            Pattern pattern = KEYWORD_PATTERN.get(keyword);
             Matcher matcher = pattern.matcher(text);
             while (matcher.find()) {
                 TextRange range = TextRange.from(startOffset + matcher.start(), keyword.length());
@@ -116,15 +145,6 @@ public class MyAnnotator implements Annotator {
     
     private void highlightBrackets(String text, int startOffset, AnnotationHolder holder) {
         Stack<BracketInfo> stack = new Stack<>();
-        Map<Character, Character> bracketPairs = new HashMap<>();
-        
-        // 定义括号对
-        bracketPairs.put('(', ')');
-        bracketPairs.put('{', '}');
-        bracketPairs.put('[', ']');
-        bracketPairs.put(')', '(');
-        bracketPairs.put('}', '{');
-        bracketPairs.put(']', '[');
         
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
