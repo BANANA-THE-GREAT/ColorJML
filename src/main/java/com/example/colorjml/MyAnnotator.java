@@ -40,7 +40,8 @@ public class MyAnnotator implements Annotator {
         
         HashSet<String> expressions = new HashSet<>();
         Collections.addAll(expressions, "forall", "exists", "sum", "product", "max", "min", "num_of",
-                "result", "old", "not_assigned", "not_modified", "nonnullelements", "type", "typeof");
+                "result", "old", "not_assigned", "not_modified", "nonnullelements", "type", "typeof",
+                "nothing", "everything");
         for (String expression : expressions) {
             EXPRESSION_PATTERN.put(expression, Pattern.compile("\\\\" + expression + "\\b"));
         }
