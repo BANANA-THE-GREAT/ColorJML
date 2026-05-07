@@ -23,6 +23,8 @@ intellij {
     type.set("IC") // Target IDE Platform
 
     plugins = ['java'] // Required plugins
+
+    updateSinceUntilBuild.set(false)    // 不自动更新 since-build 和 until-build，保持与 plugin.xml 中一致
 }
 
 tasks.withType(JavaCompile) {
@@ -53,7 +55,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("252.*")
+        untilBuild.set(null)    // 不指定 untilBuild，表示兼容所有未来版本的IDE
     }
 
     signPlugin {
