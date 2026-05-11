@@ -18,11 +18,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MyAnnotator implements Annotator {
-    private static final JBColor VARIABLE_ORANGE = new JBColor(new Color(0xFF4500), new Color(0xFFA500));
-    private static final JBColor VARIABLE_GREEN = new JBColor(new Color(0x228B22), new Color(0x32CD32));
-    private static final JBColor VARIABLE_CYAN = new JBColor(new Color(0x00B5B5), new Color(0x00CED1));
-    private static final JBColor VARIABLE_BLUE = new JBColor(new Color(0x0000FF), new Color(0x1E90FF));
-    private static final JBColor VARIABLE_PINK = new JBColor(new Color(0x8B008B), new Color(0xFF6666));
+    // OKLAB Colors - Saturated Morandi Palette (Light L=0.4, Dark L=0.6)
+    private static final JBColor JML_ORANGE = new JBColor(new Color(0x792D00), new Color(0xCF8E6D));
+    private static final JBColor JML_GREEN  = new JBColor(new Color(0x1E5600), new Color(0x589142));
+    private static final JBColor JML_CYAN   = new JBColor(new Color(0x005657), new Color(0x2F9091));
+    private static final JBColor JML_BLUE   = new JBColor(new Color(0x26477A), new Color(0x5D81B9));
+    private static final JBColor JML_PINK   = new JBColor(new Color(0x702858), new Color(0xB06293));
+    private static final JBColor JML_RED    = new JBColor(new Color(0x85121F), new Color(0xC95656));
+
+    private static final JBColor JML_COMMENT_BODY_COLOR = new JBColor(new Color(0x46474D), new Color(0xACAEB4));
+    private static final JBColor JML_EXPRESSION_COLOR   = new JBColor(new Color(0x6E2762), new Color(0xAD629E));
+    private static final JBColor JML_KEYWORD_COLOR      = new JBColor(new Color(0x723310), new Color(0xCF8E6D));
+
+    private static final TextAttributesKey JML_COMMENT_BODY_ATTR = TextAttributesKey.createTextAttributesKey("JML_COMMENT_BODY", new TextAttributes(JML_COMMENT_BODY_COLOR, null, null, null, Font.PLAIN));
+    private static final TextAttributesKey JML_EXPRESSION_ATTR = TextAttributesKey.createTextAttributesKey("JML_EXPRESSION", new TextAttributes(JML_EXPRESSION_COLOR, null, null, null, Font.PLAIN));
+    private static final TextAttributesKey JML_KEYWORD_ATTR = TextAttributesKey.createTextAttributesKey("JML_KEYWORD", new TextAttributes(JML_KEYWORD_COLOR, null, null, null, Font.PLAIN));
     private static final Map<String, Pattern> KEYWORD_PATTERN = new HashMap<>();
     private static final Map<String, Pattern> EXPRESSION_PATTERN = new HashMap<>();
     private static final Map<String, Pattern> FUNC_BEHAVIOR_PATTERN = new HashMap<>();
@@ -47,14 +57,14 @@ public class MyAnnotator implements Annotator {
         }
         
         Map<String, JBColor> name2color = new HashMap<>();
-        name2color.put("normal_behavior", VARIABLE_GREEN);
-        name2color.put("assignable", VARIABLE_BLUE);
-        name2color.put("modifiable", VARIABLE_BLUE);
-        name2color.put("exceptional_behavior", JBColor.RED);
-        name2color.put("requires", VARIABLE_GREEN);
-        name2color.put("ensures", VARIABLE_CYAN);
-        name2color.put("signals", JBColor.RED);
-        name2color.put("signals_only", JBColor.RED);
+        name2color.put("normal_behavior", JML_GREEN);
+        name2color.put("assignable", JML_BLUE);
+        name2color.put("modifiable", JML_BLUE);
+        name2color.put("exceptional_behavior", JML_RED);
+        name2color.put("requires", JML_GREEN);
+        name2color.put("ensures", JML_CYAN);
+        name2color.put("signals", JML_RED);
+        name2color.put("signals_only", JML_RED);
         for (String name : name2color.keySet()) {
             FUNC_BEHAVIOR_PATTERN.put(name, Pattern.compile("\\b" + name + "\\b"));
             FUNC_BEHAVIOR_COLOR.put(
@@ -90,7 +100,7 @@ public class MyAnnotator implements Annotator {
             
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                     .range(element.getTextRange())
-                    .textAttributes(DefaultLanguageHighlighterColors.IDENTIFIER)  // 设置一下默认颜色
+                    .textAttributes(JML_COMMENT_BODY_ATTR)  // 设置一下默认颜色
                     .create();
             
             highlightBrackets(text, element.getTextRange().getStartOffset(), holder);
@@ -123,7 +133,7 @@ public class MyAnnotator implements Annotator {
                 TextRange range = TextRange.from(startOffset + matcher.start(), expr.length() + 1);
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                         .range(range)
-                        .textAttributes(DefaultLanguageHighlighterColors.STATIC_FIELD)
+                        .textAttributes(JML_EXPRESSION_ATTR)
                         .create();
             }
         }
@@ -137,7 +147,7 @@ public class MyAnnotator implements Annotator {
                 TextRange range = TextRange.from(startOffset + matcher.start(), keyword.length());
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                         .range(range)
-                        .textAttributes(DefaultLanguageHighlighterColors.KEYWORD)
+                        .textAttributes(JML_KEYWORD_ATTR)
                         .create();
             }
         }
@@ -192,23 +202,23 @@ public class MyAnnotator implements Annotator {
     // 预定义的彩虹颜色，用于括号高亮
     private static final TextAttributesKey[] RAINBOW_COLORS = {
             TextAttributesKey.createTextAttributesKey("RAINBOW_COLOR_1", new TextAttributes(
-                    VARIABLE_ORANGE, // 亮色和暗色主题的橙色
+                    JML_ORANGE, // 亮色和暗色主题的橙色
                     null, null, null, Font.PLAIN)),
             
             TextAttributesKey.createTextAttributesKey("RAINBOW_COLOR_2", new TextAttributes(
-                    VARIABLE_GREEN, // 亮色和暗色主题的绿色
+                    JML_GREEN, // 亮色和暗色主题的绿色
                     null, null, null, Font.PLAIN)),
             
             TextAttributesKey.createTextAttributesKey("RAINBOW_COLOR_3", new TextAttributes(
-                    VARIABLE_CYAN, // 亮色和暗色主题的青色
+                    JML_CYAN, // 亮色和暗色主题的青色
                     null, null, null, Font.PLAIN)),
             
             TextAttributesKey.createTextAttributesKey("RAINBOW_COLOR_4", new TextAttributes(
-                    VARIABLE_BLUE, // 亮色和暗色主题的蓝色
+                    JML_BLUE, // 亮色和暗色主题的蓝色
                     null, null, null, Font.PLAIN)),
             
             TextAttributesKey.createTextAttributesKey("RAINBOW_COLOR_5", new TextAttributes(
-                    VARIABLE_PINK, // 亮色和暗色主题的品红色
+                    JML_PINK, // 亮色和暗色主题的品红色
                     null, null, null, Font.PLAIN)),
     };
     
